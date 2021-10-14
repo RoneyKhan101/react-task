@@ -4,71 +4,89 @@ import NewPost from "./containers/newPost";
 import {View} from "./components/view";
 
 function App() {
-  const [patients, setPatients] = useState([]);
+    const initialData = {
+        patientName: "",
+        procedureTime: "",
+        consentFor: "",
+        facility: "",
+        details: ""
+    }
+    const [initialValues, setInitialValues] = useState(initialData);
 
-  useEffect(() => {
-    const prevData = JSON.parse(localStorage.getItem('patients'));
-    if (prevData) setPatients(prevData)
-  }, [])
+    const [patients, setPatients] = useState([]);
 
-  const setLocalStorage = (values) => {
-    const prevData = JSON.parse(localStorage.getItem('patients'));
-    if (prevData && prevData.length > 2) prevData.splice(0, 1)
-    localStorage.setItem('patients', JSON.stringify(prevData ? [...prevData, values] : [values]));
-  }
+    useEffect(() => {
+        const prevData = JSON.parse(localStorage.getItem('patients'));
+        if (prevData) setPatients(prevData)
+    }, [])
 
-  const handleAddBookSubmit = (values, resetForm) => {
-    if (patients && patients.length > 2) patients.splice(0, 1)
-    setPatients([...patients, values]);
-    setLocalStorage(values);
-    resetForm()
-  }
+    const setLocalStorage = (values) => {
+        const prevData = JSON.parse(localStorage.getItem('patients'));
+        if (prevData && prevData.length > 2) prevData.splice(0, 1)
+        localStorage.setItem('patients', JSON.stringify(prevData ? [...prevData, values] : [values]));
+    }
 
-  return (
-      <div className="container wrapper">
-        <h1>Sample Patient Registration</h1>
-        <div className="main">
-          <div className="col-md-12">
-            <NewPost data={{submitForm: handleAddBookSubmit}}/>
-          </div>
-        </div>
+    const handleAddBookSubmit = (values, resetForm) => {
+        if (patients && patients.length > 2) patients.splice(0, 1)
+        setPatients([...patients, values]);
+        setLocalStorage(values);
+        resetForm()
+        setInitialValues(initialData)
+    }
 
-        <div className="container col-md-12">
-          {patients.length ?
-              <>
-                <div className="table-responsive">
-                  <table className="table">
-                    <thead>
-                    <tr>
-                      <th>Patient Name</th>
-                      <th>Procedure Date</th>
-                      <th>Procedure Time</th>
-                      <th>Consent For</th>
-                      <th>Faculty</th>
-                      <th>Details/Notes</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <View patients={patients}/>
-                    </tbody>
-                  </table>
+    return (
+        <div className="container wrapper">
+            <h1>Sample Patient Registration</h1>
+            <div className="main">
+                <div className="col-md-12">
+                    <NewPost
+                        initialValues={initialValues}
+                        data={{submitForm: handleAddBookSubmit}}
+                    />
                 </div>
-                <button
-                    className="btn btn-danger btn-md"
-                    type="button"
-                    onClick={() => {
-                      setPatients([]);
-                      localStorage.setItem("patients", JSON.stringify([]))
-                    }}
-                >
-                  Remove All
-                </button>
-              </>
-              : ''
-          }
+            </div>
+
+            <div className="container col-md-12">
+                {patients.length ?
+                    <>
+                        <div className="table-responsive">
+                            <table className="table">
+                                <thead>
+                                <tr>
+                                    <th>Patient Name</th>
+                                    <th>Procedure Date</th>
+                                    <th>Procedure Time</th>
+                                    <th>Consent For</th>
+                                    <th>Faculty</th>
+                                    <th>Details/Notes</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <View
+                                    patients={patients}
+                                    setPatients={setPatients}
+                                    setInitialValues={setInitialValues}
+                                />
+                                </tbody>
+                            </table>
+                        </div>
+                        <button
+                            className="btn btn-danger btn-md"
+                            type="button"
+                            onClick={() => {
+                                setPatients([]);
+                                localStorage.setItem("patients", JSON.stringify([]))
+                            }}
+                        >
+                            Remove All
+                        </button>
+                    </>
+                    : ''
+                }
+            </div>
         </div>
-      </div>
-  )
+    )
 }
 
 export default App;

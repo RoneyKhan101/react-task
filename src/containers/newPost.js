@@ -2,21 +2,12 @@ import React from "react";
 import {ErrorMessage, Field, Formik} from "formik";
 import Validators from "../validations";
 
-const initialValues = {
-    patientName: "",
-    procedureTime: "",
-    consentFor: "",
-    facility: "",
-    details: "",
-};
-
-
 const NewPost = (props) => {
-    const {data} = props;
+    const {data, initialValues} = props;
 
     return (
         <>
-            <Formik initialValues={initialValues} onSubmit={(value, {resetForm}) => data.submitForm(value, resetForm)}>
+            <Formik enableReinitialize={true} initialValues={initialValues} onSubmit={(value, {resetForm}) => data.submitForm(value, resetForm)}>
                 {(formik) => {
                     const {handleSubmit} = formik;
                     return (
