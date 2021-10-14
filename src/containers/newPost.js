@@ -1,15 +1,30 @@
-import React from "react";
+import React, {useState} from "react";
 import {ErrorMessage, Field, Formik} from "formik";
+import CreatableSelect from 'react-select/creatable';
 import Validators from "../validations";
 
 const NewPost = (props) => {
     const {data, initialValues} = props;
 
+    const [consents, setConsents] = useState([
+        {label: 'Surgery', value: 'Surgery'},
+        {label: 'Physical Exam', value: 'Physical Exam'},
+        {label: 'Consultation', value: 'Consultation'},
+        {label: 'Injury', value: 'Injury'},
+    ]);
+
+    const [facility, setFacility] = useState([
+        {label: 'Acme, Med Corp', value: 'Acme, Med Corp'},
+        {label: 'Sample Surgical', value: 'Sample Surgical'},
+        {label: 'Choice Clinic', value: 'Choice Clinic'},
+        {label: 'Example Hospital', value: 'Example Hospital'},
+    ]);
+
     return (
         <>
             <Formik enableReinitialize={true} initialValues={initialValues} onSubmit={(value, {resetForm}) => data.submitForm(value, resetForm)}>
                 {(formik) => {
-                    const {handleSubmit} = formik;
+                    const {handleSubmit, setFieldValue, values} = formik;
                     return (
                         <div className="">
                             <form onSubmit={handleSubmit}>
@@ -58,37 +73,43 @@ const NewPost = (props) => {
                                                 <div className="form-group">
                                                     <label htmlFor="consentFor">Consent For</label>
                                                     <Field
-                                                        as="select"
                                                         name="consentFor"
                                                         className="form-control"
                                                         validate={Validators.required}
-                                                    >
-                                                        <option value="" label="Consent For"/>
-                                                        <option value="Surgery" label="Surgery"/>
-                                                        <option value="Physical Exam" label="Physical Exam"/>
-                                                        <option value="Consultation" label="Consultation"/>
-                                                        <option value="Injury" label="Injury"/>
-                                                    </Field>
-                                                    <ErrorMessage name="consentFor" render={msg => <div
-                                                        className="text-danger">{msg}</div>}/>
+                                                        render={() => (
+                                                            <CreatableSelect
+                                                                isClearable
+                                                                value={{label: values.consentFor, value: values.consentFor}}
+                                                                onChange={(e) => setFieldValue("consentFor", e?.value ? e.value : "")}
+                                                                options={consents}
+                                                            />
+                                                        )}
+                                                     />
+                                                    <ErrorMessage
+                                                        name="consentFor"
+                                                        render={msg => <div className="text-danger">{msg}</div>}
+                                                    />
                                                 </div>
 
                                                 <div className="form-group">
                                                     <label htmlFor="facility">Facility</label>
                                                     <Field
-                                                        as="select"
                                                         name="facility"
                                                         className="form-control"
                                                         validate={Validators.required}
-                                                    >
-                                                        <option value="" label="Facility For"/>
-                                                        <option value="Acme, Med Corp" label="Acme, Med Corp"/>
-                                                        <option value="Sample Surgical" label="Sample Surgical"/>
-                                                        <option value="Choice Clinic" label="Choice Clinic"/>
-                                                        <option value="Example Hospital" label="Example Hospital"/>
-                                                    </Field>
-                                                    <ErrorMessage name="facility" render={msg => <div
-                                                        className="text-danger">{msg}</div>}/>
+                                                        render={() => (
+                                                            <CreatableSelect
+                                                                isClearable
+                                                                value={{label: values.facility, value: values.facility}}
+                                                                onChange={(e) => setFieldValue("facility", e?.value ? e.value : "")}
+                                                                options={facility}
+                                                            />
+                                                        )}
+                                                    />
+                                                    <ErrorMessage
+                                                        name="facility"
+                                                        render={msg => <div className="text-danger">{msg}</div>}
+                                                    />
                                                 </div>
                                             </div>
                                         </div>
